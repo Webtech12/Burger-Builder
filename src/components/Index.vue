@@ -15,21 +15,39 @@
 </template>
 
 <script>
+import db from '@/firebase/init';
+
 export default {
   name: 'Index',
   data() {
     return {
-      burgers: [
-        {title: 'Chicken Burger', slug: 'chicken-burger', ingerdients: ['chicken', 'lettuce', 'cloe slaw'], id: '1'},
-        {title: 'Beef Burger', slug: 'beef-burger', ingerdients: ['beef', 'cheese', 'tomatoes'], id: '2'}
-      ]
+      burgers: []
     }
+  },
+  created() {
+    //fetch data from firestore
+    db.collection('burgers').get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let burger = doc.data()
+          burger.id = doc.id
+          this.burgers.push(burger)
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
   },
   methods: {
     deleteCard(id) {
-      this.burgers = this.burgers.filter(burger => {
-        return burger.id != id
-      })
+      // console.log(id)
+      db.collection('burgers').doc(id).delete()
+        .then(() => {
+          this.burgers = this.burgers.filter(burger => {
+            return burger.id != id
+          })
+          }).catch((err) => {
+          console.log(err);
+        });
     }
   },
   
