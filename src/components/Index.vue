@@ -5,7 +5,7 @@
        <i class="material-icons delete" @click="deleteCard(burger.id)">delete</i>
        <h2 class="indigo-text">{{ burger.title }}</h2>
        <ul class="ingerdients">
-         <li v-for="(ing, index) in burger.ingerdients" :key="index">
+         <li v-for="(ing, index) in burger.ingredients" :key="index">
            <span class="chip">{{ ing }}</span>
          </li>
        </ul>
@@ -32,7 +32,7 @@ export default {
           let burger = doc.data()
           burger.id = doc.id
           this.burgers.push(burger)
-        });
+        })
       }).catch((err) => {
         console.log(err);
       });
