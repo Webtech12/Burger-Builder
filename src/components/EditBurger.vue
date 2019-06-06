@@ -26,6 +26,7 @@
 
 <script>
 import db from '@/firebase/init'
+import slugify from 'slugify'
 
 export default {
   name: 'EditBurger',
@@ -38,7 +39,26 @@ export default {
   },
    methods: {
        EditBurger(){
-           
+           if (this.burger.title) {
+              this.feedback = null
+              //create slug
+              this.burger.slug = slugify(this.burger.title, {
+                  replacement: '-',
+                  remove: /[$*_+~.()'"!\-:@]/g,
+                  lower:true
+              })
+              db.collection('burgers').doc(this.burger.id).update({
+                  title: this.burger.title,
+                  ingredients: this.burger.ingredients,
+                  slug: this.burger.slug
+              }).then(() => {
+                  this.$router.push({ name: 'Index' })
+              }).catch((err) => {
+                  console.log(err);
+              });
+          } else {
+              this.feedback = 'Enter Title'
+          }
        },
       addIng(){
           if (this.another) {
